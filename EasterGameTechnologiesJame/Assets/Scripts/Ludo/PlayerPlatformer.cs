@@ -6,6 +6,8 @@ public class PlayerPlatformer : MonoBehaviour
 {
     float inputX;
     bool grounded;
+    bool gliding;
+    float glidingHorizontal;
     float jumpTimer;
     Vector2 previousVelocity = Vector2.zero;
     Rigidbody2D RB;
@@ -18,6 +20,8 @@ public class PlayerPlatformer : MonoBehaviour
     float jumpHeight = 5;
     [SerializeField]
     float squashStretchCutoff = 0.5f;
+    [SerializeField]
+    float squashStretchValue = 0.6f;
     [SerializeField]
     Transform playerSprite = null;
     [SerializeField]
@@ -40,6 +44,15 @@ public class PlayerPlatformer : MonoBehaviour
         {
             jumpTimer = jumpBufferValue;
         }
+
+        if (Input.GetButton("Fire3") && RB.velocity.y < 0.5f)
+        {
+            gliding = true;
+        }
+        else
+        {
+            gliding = false;
+        }
         
     }
 
@@ -51,6 +64,10 @@ public class PlayerPlatformer : MonoBehaviour
         if (grounded)
         {
             RB.velocity -= RB.velocity * new Vector2(0.9f, 0);
+        }
+        else if (gliding)
+        {
+            RB.velocity = new Vector2(RB.velocity.x, RB.velocity.y * 0.8f);
         }
         //If Player moves left
         if (inputX < 0)
@@ -105,7 +122,7 @@ public class PlayerPlatformer : MonoBehaviour
         }
 
         //Change the player sprite's X size based on Y velocity.
-        playerSprite.localScale = new Vector3(Mathf.Lerp(1.0f, 0.6f, Mathf.Abs(RB.velocity.y * 0.1f) - squashStretchCutoff), 1, 1);
+        playerSprite.localScale = new Vector3(Mathf.Lerp(1.0f, squashStretchValue, Mathf.Abs(RB.velocity.y * 0.1f) - squashStretchCutoff), 1, 1);
 
         //Set 'previous velocity' of frame to be used in camera shake next frame
         previousVelocity = RB.velocity;
