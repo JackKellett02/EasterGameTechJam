@@ -15,8 +15,8 @@ public class AudioManagerScript : MonoBehaviour {
 	[SerializeField]
 	private GameObject audioSourcePrefab = null;
 
-	//[SerializeField]
-	//private List<AudioFile> damagePlayerFiles = new List<AudioFile>();
+	[SerializeField]
+	private List<AudioFile> soundEffects = new List<AudioFile>();
 	#endregion
 
 	#region Private Variable Declarations.
@@ -30,6 +30,7 @@ public class AudioManagerScript : MonoBehaviour {
 	private static float maxVolume = 0.0f;
 	private float timer = 0.0f;
 
+	private static List<AudioFile> staticSoundEffectFiles;
 	#endregion
 
 	#region Private Functions.
@@ -51,6 +52,12 @@ public class AudioManagerScript : MonoBehaviour {
 
 		//Subscribe listeners to correct events.
 		//BaseEnemy.DamagePlayer += DamagePlayerListener;
+
+		//Create the static audio file list and copy the serializeField values.
+		staticSoundEffectFiles = new List<AudioFile>();
+		for (int i = 0; i < soundEffects.Count; i++) {
+			staticSoundEffectFiles.Add(soundEffects[i]);
+		}
 	}
 
 	// Update is called once per frame
@@ -159,50 +166,47 @@ public class AudioManagerScript : MonoBehaviour {
 	/// Also can give the audio source a position to play the sound from.
 	/// </summary>
 	/// <param name="name"></param>
-	private IEnumerator PlaySoundEffect(Vector3 a_position, List<AudioFile> listOfSFX) {
-		//Check list is valid.
-		if (listOfSFX.Count <= 0) {
-			//Early out.
-			Debug.LogError("Sound Effect list needs to be populated in audio manager.");
-			yield return new WaitForEndOfFrame();
-		} else {
-
-			//Choose a random sfx.
-			int randomIndex = Random.Range(0, listOfSFX.Count - 1);
-
-			//Find the audio clip with the specified name.
-			AudioClip audioClip = listOfSFX[randomIndex].audioClip;
-			float volume = listOfSFX[randomIndex].volume;
-
-			//Get an audio source object.
-			GameObject audioSoureGameObject = audioSourcePool.SpawnObject();
-			AudioSource audioSource = audioSoureGameObject.GetComponent<AudioSource>();
-
-			//Change the volume to the correctly volume for the clip.
-			audioSource.volume = volume;
-
-			//Move it to the specified location.
-			audioSoureGameObject.transform.position = a_position;
-
-			//Get the length of the audio clip.
-			float clipLength = 0.5f;
-			if (audioClip != null) {
-				//Pass audio clip values to the audio source and play the clip.
-				clipLength = audioClip.length;
-				audioSource.clip = audioClip;
-				audioSource.loop = false;
-				audioSource.Play();
-			} else {
-				Debug.LogError("Audio Manager has not been populated with sound effects!!!");
+	public static IEnumerator PlaySoundEffect(string name, Vector3 a_position) {
+		//Find the audio clip with the specified name.
+		AudioClip audioClip = null;
+		float volume = 0.0f;
+		for (int i = 0; i < staticSoundEffectFiles.Count; i++) {
+			//If the name matches and it's not a music clip.
+			if (staticSoundEffectFiles[i].audioClip.name == name) {
+				audioClip = staticSoundEffectFiles[i].audioClip;
+				volume = staticSoundEffectFiles[i].volume;
+				break;
 			}
-
-			//Pause execution for length of the audio.
-			yield return new WaitForSeconds(clipLength);
-
-			//Deactivate the audio Source.
-			audioSource.Stop();
-			audioSoureGameObject.SetActive(false);
 		}
+
+		//Get an audio source object.
+		GameObject audioSoureGameObject = audioSourcePool.SpawnObject();
+		AudioSource audioSource = audioSoureGameObject.GetComponent<AudioSource>();
+
+		//Change the volume to the correctly volume for the clip.
+		audioSource.volume = volume;
+
+		//Move it to the specified location.
+		audioSoureGameObject.transform.position = a_position;
+
+		//Get the length of the audio clip.
+		float clipLength = 0.5f;
+		if (audioClip != null) {
+			//Pass audio clip values to the audio source and play the clip.
+			clipLength = audioClip.length;
+			audioSource.clip = audioClip;
+			audioSource.loop = false;
+			audioSource.Play();
+		} else {
+			Debug.LogError("Sound effect does not exist in the audio managers sound effect list.");
+		}
+
+		//Pause execution for length of the audio.
+		yield return new WaitForSeconds(clipLength);
+
+		//Deactivate the audio Source.
+		audioSource.Stop();
+		audioSoureGameObject.SetActive(false);
 	}
 	#endregion
 

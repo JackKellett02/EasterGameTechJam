@@ -13,6 +13,8 @@ public class ResetToCheckpointScript : MonoBehaviour {
 			CheckpointManagerScript.ResetToCheckpoint();
 
 			//Fire death event.
+			//Play a hurt sound.
+			StartCoroutine(AudioManagerScript.PlaySoundEffect("OOF", Camera.main.gameObject.transform.position));
 		}
 	}
 }
