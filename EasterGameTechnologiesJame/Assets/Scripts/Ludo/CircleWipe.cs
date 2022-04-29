@@ -34,7 +34,7 @@ public class CircleWipe : MonoBehaviour
 
     public void WipeOut(float wipeTime)
     {
-        wipeTimer = 0;
+        wipeTimer = wipeTime + wipeHoldTime;
         startTime = wipeTime;
         wiping = true;
         wipeDirection = -1.0f;

@@ -19,6 +19,9 @@ public class MenuScript : MonoBehaviour
     [SerializeField]
     SpringDynamics bulbThree;
 
+    [SerializeField]
+    GameObject stopInput;
+
     public bool bulbOneUnlocked = false;
     public bool bulbTwoUnlocked = false;
     public bool bulbThreeUnlocked = false;
@@ -58,6 +61,7 @@ public class MenuScript : MonoBehaviour
             }
 
             currentPlanet -= 1;
+            GameObject.FindGameObjectWithTag("LevelStorage").GetComponent<ProgressStorage>().SetBulb(currentPlanet);
         }
     }
 
@@ -90,12 +94,21 @@ public class MenuScript : MonoBehaviour
 
             bulbHolder.AddOffset(new Vector2(-890.0f, 0.0f));
             currentPlanet += 1;
+            GameObject.FindGameObjectWithTag("LevelStorage").GetComponent<ProgressStorage>().SetBulb(currentPlanet);
         }
     }
 
     public void LoadScene(int sparkNumber)
     {
-        LoadScene(sparkNumber);
+        stopInput.SetActive(true);
         GameObject.FindGameObjectWithTag("LevelStorage").GetComponent<ProgressStorage>().SetLevel(0);
+        StartCoroutine(SlideWaiter(sparkNumber));
+    }
+
+    IEnumerator SlideWaiter(int sparkNumber)
+    {
+        GameObject.FindGameObjectWithTag("CircleWipe").GetComponent<CircleWipe>().WipeIn(1);
+        yield return new WaitForSeconds(1);
+        SceneManager.LoadScene(sparkNumber);
     }
 }
