@@ -7,7 +7,7 @@ public class PlayerPlatformer : MonoBehaviour
     float inputX;
     bool grounded;
     bool gliding;
-    float glidingHorizontal;
+    bool canInput = true;
     float jumpTimer;
     Vector2 previousVelocity = Vector2.zero;
     Rigidbody2D RB;
@@ -26,6 +26,8 @@ public class PlayerPlatformer : MonoBehaviour
     Transform playerSprite = null;
     [SerializeField]
     float fallShakeMultiplier = 0.025f;
+    [SerializeField]
+    float airBrakeMultiplier = 1.0f;
 
     // Start is called before the first frame update
     void Start()
@@ -36,23 +38,33 @@ public class PlayerPlatformer : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        inputX = Input.GetAxisRaw("Horizontal");
-
-        //Handling Jump Input Buffer values
+        //Handling Jump Input Buffer timer
         jumpTimer -= Time.deltaTime;
-        if (Input.GetButtonDown("Jump"))
+        
+        if (canInput)
         {
-            jumpTimer = jumpBufferValue;
-        }
+            inputX = Input.GetAxisRaw("Horizontal");
 
-        if (Input.GetButton("Fire3") && RB.velocity.y < 0.5f)
-        {
-            gliding = true;
+            if (Input.GetButtonDown("Jump"))
+            {
+                jumpTimer = jumpBufferValue;
+            }
+
+            if (Input.GetButton("Fire3") && RB.velocity.y < 0.5f)
+            {
+                gliding = true;
+            }
+            else
+            {
+                gliding = false;
+            }
         }
         else
         {
+            inputX = 0;
             gliding = false;
         }
+
         
     }
 
@@ -101,15 +113,15 @@ public class PlayerPlatformer : MonoBehaviour
         {
             if (RB.velocity.x > maxSpeed)
             {
-                RB.velocity = new Vector2(Mathf.Lerp(RB.velocity.x, maxSpeed, 0.7f), RB.velocity.y);
+                RB.velocity = new Vector2(Mathf.Lerp(RB.velocity.x, maxSpeed, 0.7f * airBrakeMultiplier), RB.velocity.y);
             }
             else if (RB.velocity.x < -maxSpeed)
             {
-                RB.velocity = new Vector2(Mathf.Lerp(RB.velocity.x, -maxSpeed, 0.7f), RB.velocity.y);
+                RB.velocity = new Vector2(Mathf.Lerp(RB.velocity.x, -maxSpeed, 0.7f * airBrakeMultiplier), RB.velocity.y);
             }
             else
             {
-                RB.velocity = new Vector2(Mathf.Lerp(RB.velocity.x, 0, 0.2f), RB.velocity.y);
+                RB.velocity = new Vector2(Mathf.Lerp(RB.velocity.x, 0, 0.2f * airBrakeMultiplier), RB.velocity.y);
             }
             
         }
@@ -126,6 +138,26 @@ public class PlayerPlatformer : MonoBehaviour
 
         //Set 'previous velocity' of frame to be used in camera shake next frame
         previousVelocity = RB.velocity;
+    }
+
+    public void PlayerDeathToggleOn(Vector2 deathDirection)
+    {
+        airBrakeMultiplier = 0.0f;
+        GetComponent<BoxCollider2D>().enabled = false;
+        RB.gravityScale = 0;
+        RB.drag = 4.0f;
+        RB.velocity = deathDirection;
+        canInput = false;
+    }
+
+    public void PlayerDeathToggleOff()
+    {
+        airBrakeMultiplier = 1.0f;
+        GetComponent<BoxCollider2D>().enabled = true;
+        RB.gravityScale = 1.5f;
+        RB.drag = 0.0f;
+        RB.velocity = Vector2.zero;
+        canInput = true;
     }
 
     private void OnCollisionEnter2D(Collision2D collision)

@@ -38,22 +38,9 @@ public class CameraController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        //Various Dev Tools
-        if (Input.GetKey(KeyCode.Q))
-        {
-            followSpeed -= 0.1f * Time.deltaTime;
-        }
-        if (Input.GetKey(KeyCode.E))
-        {
-            followSpeed += 0.1f * Time.deltaTime;
-        }
         if (Input.GetKeyDown(KeyCode.Escape))
         {
             Application.Quit();
-        }
-        if (Input.GetKeyDown(KeyCode.P))
-        {
-            CameraShake(0.4f);
         }
     }
 
