@@ -189,21 +189,8 @@ public class PlayerPlatformer : MonoBehaviour {
 			Animator.SetBool("Death", false);
 			Animator.SetBool("Idle", false);
 			lastInput = inputX;
-
-		} else if (lastInput <= -1.0f || lastInput >= 1.0f && grounded && inputX <= 0.0f) {
-			Animator.SetBool("JumpUp", false);
-			Animator.SetBool("JumpDown", false);
-			Animator.SetBool("JumpPeak", false);
-			Animator.SetBool("StartRunning", false);
-			Animator.SetBool("StopRunning", true);
-			Animator.SetBool("StartGliding", false);
-			Animator.SetBool("StopGliding", false);
-			Animator.SetBool("JumpLand", false);
-			Animator.SetBool("Death", false);
-			Animator.SetBool("Idle", false);
-			lastInput = inputX;
 		}
-		if (RB.velocity.y > 0.1f) {
+		if (RB.velocity.y > 0.1f && !grounded) {
 			//Player is moving up.
 			Animator.SetBool("JumpUp", true);
 			Animator.SetBool("JumpDown", false);
@@ -216,7 +203,7 @@ public class PlayerPlatformer : MonoBehaviour {
 			Animator.SetBool("Death", false);
 			Animator.SetBool("Idle", false);
 		}
-		if (RB.velocity.y > -0.1f && RB.velocity.y < 0.1f) {
+		if (RB.velocity.y > -0.1f && RB.velocity.y < 0.1f && !grounded) {
 			//Player is peaking.
 			Animator.SetBool("JumpUp", false);
 			Animator.SetBool("JumpDown", false);
@@ -229,7 +216,7 @@ public class PlayerPlatformer : MonoBehaviour {
 			Animator.SetBool("Death", false);
 			Animator.SetBool("Idle", false);
 		}
-		if (RB.velocity.y < -0.1f) {
+		if (RB.velocity.y < -0.1f && !grounded) {
 			//Player is moving down.
 			Animator.SetBool("JumpUp", false);
 			Animator.SetBool("JumpDown", true);
