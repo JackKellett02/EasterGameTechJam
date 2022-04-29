@@ -215,6 +215,7 @@ MonoBehaviour:
   playerSprite: {fileID: 6345734988478561051}
   fallShakeMultiplier: 0.025
   airBrakeMultiplier: 1
+  Animator: {fileID: 4876564536450493397}
 --- !u!50 &6345734989017688032
 Rigidbody2D:
   serializedVersion: 4
