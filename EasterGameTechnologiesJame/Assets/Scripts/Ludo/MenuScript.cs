@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class MenuScript : MonoBehaviour
 {
@@ -18,6 +18,10 @@ public class MenuScript : MonoBehaviour
     SpringDynamics bulbTwo;
     [SerializeField]
     SpringDynamics bulbThree;
+
+    public bool bulbOneUnlocked = false;
+    public bool bulbTwoUnlocked = false;
+    public bool bulbThreeUnlocked = false;
 
     // Start is called before the first frame update
     void Start()
@@ -36,22 +40,24 @@ public class MenuScript : MonoBehaviour
         if(currentPlanet != 0)
         {
             bulbHolder.AddOffset(new Vector2(890.0f, 0.0f));
-            currentPlanet -= 1;
             
-            if(currentPlanet == 0)
+            if(currentPlanet == 1)
             {
-                
-            }
-            else if(currentPlanet == 1)
-            {
+                starterPlanet.SwitchSize();
                 bulbOne.SwitchSize();
-                bulbTwo.SwitchSize();
             }
             else if(currentPlanet == 2)
+            {
+                bulbTwo.SwitchSize();
+                bulbOne.SwitchSize();
+            }
+            else if(currentPlanet == 3)
             {
                 bulbThree.SwitchSize();
                 bulbTwo.SwitchSize();
             }
+
+            currentPlanet -= 1;
         }
     }
 
@@ -59,8 +65,37 @@ public class MenuScript : MonoBehaviour
     {
         if(currentPlanet != 3)
         {
+            bool pathUnlocked = false;
+
+            if (currentPlanet == 0 && bulbOneUnlocked)
+            {
+                starterPlanet.SwitchSize();
+                bulbOne.SwitchSize();
+                pathUnlocked = true;
+            }
+            else if (currentPlanet == 1 && bulbTwoUnlocked)
+            {
+                bulbTwo.SwitchSize();
+                bulbOne.SwitchSize();
+                pathUnlocked = true;
+            }
+            else if (currentPlanet == 2 && bulbThreeUnlocked)
+            {
+                bulbThree.SwitchSize();
+                bulbTwo.SwitchSize();
+                pathUnlocked = true;
+            }
+
+            if (!pathUnlocked) { return; }
+
             bulbHolder.AddOffset(new Vector2(-890.0f, 0.0f));
             currentPlanet += 1;
         }
+    }
+
+    public void LoadScene(int sparkNumber)
+    {
+        LoadScene(sparkNumber);
+        GameObject.FindGameObjectWithTag("LevelStorage").GetComponent<ProgressStorage>().SetLevel(0);
     }
 }
