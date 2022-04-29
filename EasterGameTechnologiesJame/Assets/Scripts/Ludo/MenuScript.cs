@@ -101,7 +101,7 @@ public class MenuScript : MonoBehaviour
     public void LoadScene(int sparkNumber)
     {
         stopInput.SetActive(true);
-        GameObject.FindGameObjectWithTag("LevelStorage").GetComponent<ProgressStorage>().SetLevel(0);
+        GameObject.FindGameObjectWithTag("LevelStorage").GetComponent<ProgressStorage>().SetLevel(sparkNumber);
         StartCoroutine(SlideWaiter(sparkNumber));
     }
 
@@ -109,6 +109,6 @@ public class MenuScript : MonoBehaviour
     {
         GameObject.FindGameObjectWithTag("CircleWipe").GetComponent<CircleWipe>().WipeIn(1);
         yield return new WaitForSeconds(1);
-        SceneManager.LoadScene(sparkNumber);
+        SceneManager.LoadScene(sparkNumber + 1);
     }
 }
