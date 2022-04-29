@@ -5,6 +5,7 @@ using UnityEngine;
 public class ProgressStorage : MonoBehaviour
 {
     static public bool[] levelProgress = new bool[16];
+    static public int bulbNumber = 0;
 
     public void SetLevel(int levelNumber)
     {
@@ -14,5 +15,15 @@ public class ProgressStorage : MonoBehaviour
     public bool[] GetLevel()
     {
         return levelProgress;
+    }
+
+    public void SetBulb(int bulb)
+    {
+        bulbNumber = bulb;
+    }
+
+    public int GetBulb()
+    {
+        return bulbNumber;
     }
 }
