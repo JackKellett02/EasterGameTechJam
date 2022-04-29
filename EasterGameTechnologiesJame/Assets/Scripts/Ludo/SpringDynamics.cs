@@ -15,7 +15,7 @@ public class SpringDynamics : MonoBehaviour
     [Range(0.5f,10.0f)]
     private float spring = 2f;
     [SerializeField]
-    [Range(0.01f, 0.25f)]
+    [Range(0.01f, 0.16f)]
     private float drag = 0.06f;
 
     [SerializeField]
@@ -32,11 +32,11 @@ public class SpringDynamics : MonoBehaviour
     #region Variable Declarations
     private RectTransform rect;
     private Vector2 primaryTarget;
-    private Vector2 sizeTarget = Vector2.zero;
-    private Vector2 altSizeTarget = Vector2.zero;
+    private Vector3 sizeTarget = Vector3.zero;
+    private Vector3 altSizeTarget = Vector3.zero;
 
     private Vector2 velocity;
-    private Vector2 sizeVelocity;
+    private Vector3 sizeVelocity;
     private Vector2 internalOffset;
     #endregion
 
@@ -45,8 +45,8 @@ public class SpringDynamics : MonoBehaviour
         rect = GetComponent<RectTransform>();
         //The first target is always where the UI element is first placed.
         primaryTarget = rect.anchoredPosition;
-        sizeTarget = rect.sizeDelta;
-        altSizeTarget = rect.sizeDelta * altSizeMult;
+        sizeTarget = rect.localScale;
+        altSizeTarget = rect.localScale * altSizeMult;
     }
 
     /// <summary>
@@ -64,9 +64,9 @@ public class SpringDynamics : MonoBehaviour
         //Size
         if (changesSize)
         {
-            sizeVelocity += (sizeTarget - rect.sizeDelta) * spring;
+            sizeVelocity += (sizeTarget - rect.localScale) * spring;
             sizeVelocity -= sizeVelocity * drag;
-            rect.sizeDelta += sizeVelocity * Time.deltaTime;
+            rect.localScale += sizeVelocity * Time.deltaTime;
         }
         
     }
@@ -109,7 +109,7 @@ public class SpringDynamics : MonoBehaviour
     }
 
     public void SwitchSize(){
-        Vector2 temp = sizeTarget;
+        Vector3 temp = sizeTarget;
         sizeTarget = altSizeTarget;
         altSizeTarget = temp;
     }
@@ -124,9 +124,9 @@ public class SpringDynamics : MonoBehaviour
         internalOffset = temp;
     }
 
-    public void AddXOffset(float offsetAdd)
+    public void AddOffset(Vector2 toAdd)
     {
-        internalOffset += new Vector2(offsetAdd,0);
+        internalOffset += toAdd;
     }
     #endregion
 
