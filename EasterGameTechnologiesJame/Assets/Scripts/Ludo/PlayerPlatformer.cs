@@ -152,82 +152,26 @@ public class PlayerPlatformer : MonoBehaviour {
 
 	private float lastInput = 0.0f;
 
-	private void HandleAnimationTransitions() {
+	private void HandleAnimationTransitions()
+	{
 		//Handle sprite rotation
-		if (inputX < 0) {
+		if (inputX < 0)
+		{
 			//Rotate the sprite left.
 			Animator.gameObject.transform.right = Vector3.left;
 		}
 
-		if (inputX > 0) {
+		if (inputX > 0)
+		{
 			//Rotate the sprite right.
 			Animator.gameObject.transform.right = Vector3.right;
 		}
 
-		//If no other animator should play then player is idle.
-		Animator.SetBool("JumpUp", false);
-		Animator.SetBool("JumpDown", false);
-		Animator.SetBool("JumpPeak", false);
-		Animator.SetBool("StartRunning", false);
-		Animator.SetBool("StopRunning", false);
-		Animator.SetBool("StartGliding", false);
-		Animator.SetBool("StopGliding", false);
-		Animator.SetBool("JumpLand", false);
-		Animator.SetBool("Death", false);
-		Animator.SetBool("Idle", true);
-		if (inputX <= -1.0f || inputX >= 1.0f && grounded) {
-			//Player is running.
-			Animator.SetBool("JumpUp", false);
-			Animator.SetBool("JumpDown", false);
-			Animator.SetBool("JumpPeak", false);
-			Animator.SetBool("StartRunning", true);
-			Animator.SetBool("StopRunning", false);
-			Animator.SetBool("StartGliding", false);
-			Animator.SetBool("StopGliding", false);
-			Animator.SetBool("JumpLand", false);
-			Animator.SetBool("Death", false);
-			Animator.SetBool("Idle", false);
-			lastInput = inputX;
-		}
-		if (RB.velocity.y > 0.1f && !grounded) {
-			//Player is moving up.
-			Animator.SetBool("JumpUp", true);
-			Animator.SetBool("JumpDown", false);
-			Animator.SetBool("JumpPeak", false);
-			Animator.SetBool("StartRunning", false);
-			Animator.SetBool("StopRunning", false);
-			Animator.SetBool("StartGliding", false);
-			Animator.SetBool("StopGliding", false);
-			Animator.SetBool("JumpLand", false);
-			Animator.SetBool("Death", false);
-			Animator.SetBool("Idle", false);
-		}
-		if (RB.velocity.y > -0.1f && RB.velocity.y < 0.1f && !grounded) {
-			//Player is peaking.
-			Animator.SetBool("JumpUp", false);
-			Animator.SetBool("JumpDown", false);
-			Animator.SetBool("JumpPeak", true);
-			Animator.SetBool("StartRunning", false);
-			Animator.SetBool("StopRunning", false);
-			Animator.SetBool("StartGliding", false);
-			Animator.SetBool("StopGliding", false);
-			Animator.SetBool("JumpLand", false);
-			Animator.SetBool("Death", false);
-			Animator.SetBool("Idle", false);
-		}
-		if (RB.velocity.y < -0.1f && !grounded) {
-			//Player is moving down.
-			Animator.SetBool("JumpUp", false);
-			Animator.SetBool("JumpDown", true);
-			Animator.SetBool("JumpPeak", false);
-			Animator.SetBool("StartRunning", false);
-			Animator.SetBool("StopRunning", false);
-			Animator.SetBool("StartGliding", false);
-			Animator.SetBool("StopGliding", false);
-			Animator.SetBool("JumpLand", false);
-			Animator.SetBool("Death", false);
-			Animator.SetBool("Idle", false);
-		}
+        if(grounded && inputX == 0)
+        {
+			Animator.SetBool("Idle", true);
+        }
+
 	}
 	#endregion
 }
