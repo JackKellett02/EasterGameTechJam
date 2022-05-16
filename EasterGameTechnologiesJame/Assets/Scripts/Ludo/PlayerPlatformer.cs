@@ -56,11 +56,12 @@ public class PlayerPlatformer : MonoBehaviour {
 			gliding = false;
 		}
 
-		HandleAnimationTransitions();
+		
 	}
 
 	private void FixedUpdate() {
 
+		HandleAnimationTransitions();
 		//Setting player horizontal velocity, only add up to max speed value, but allow player to keep faster velocities
 		float maxSpeed = speed * Time.deltaTime;
 		if (grounded) {
@@ -167,10 +168,16 @@ public class PlayerPlatformer : MonoBehaviour {
 			Animator.gameObject.transform.right = Vector3.right;
 		}
 
-        if(grounded && inputX == 0)
+        if(grounded && inputX == 0 && RB.velocity.y == 0.0f)
         {
 			Animator.SetBool("Idle", true);
         }
+
+		if(jumpTimer > 0)
+        {
+			Animator.SetBool("Idle", false);
+			Animator.SetTrigger("JumpStart");
+		}
 
 	}
 	#endregion
