@@ -168,10 +168,26 @@ public class PlayerPlatformer : MonoBehaviour {
 			Animator.gameObject.transform.right = Vector3.right;
 		}
 
+        if (grounded)
+        {
+			Animator.SetBool("Grounded", true);
+        }
+        else
+        {
+			Animator.SetBool("Grounded", false);
+		}
+
         if(grounded && inputX == 0 && RB.velocity.y == 0.0f)
         {
 			Animator.SetBool("Idle", true);
-        }
+			Animator.SetBool("Running", false);
+		}
+
+		if(Mathf.Abs(inputX) > 0)
+        {
+			Animator.SetBool("Idle", false);
+			Animator.SetBool("Running", true);
+		}
 
 		if(jumpTimer > 0)
         {
