@@ -23,7 +23,7 @@ public class Springboard : MonoBehaviour
     {
         if(collision.tag == "Player")
         {
-            collision.GetComponent<Rigidbody2D>().velocity = transform.up * power;
+            collision.GetComponent<PlayerPlatformer>().PlayerJump(transform.up * power);
         }
     }
 }

@@ -29,6 +29,8 @@ public class PlayerPlatformer : MonoBehaviour {
 	[SerializeField]
 	float airBrakeMultiplier = 1.0f;
 
+	bool jumped;
+
 	// Start is called before the first frame update
 	void Start() {
 		RB = GetComponent<Rigidbody2D>();
@@ -101,8 +103,7 @@ public class PlayerPlatformer : MonoBehaviour {
 
 		//If there's a jump stored in the jump buffer and the player is grounded, set upwards velocity to jump height.
 		if (jumpTimer > 0.0f && grounded == true) {
-			RB.velocity = new Vector2(RB.velocity.x, jumpHeight);
-			jumpTimer = 0.0f;
+			PlayerJump(new Vector2(RB.velocity.x, jumpHeight));
 		}
 
 		//Change the player sprite's X size based on Y velocity.
@@ -110,6 +111,13 @@ public class PlayerPlatformer : MonoBehaviour {
 
 		//Set 'previous velocity' of frame to be used in camera shake next frame
 		previousVelocity = RB.velocity;
+	}
+
+	public void PlayerJump(Vector2 jumpVelocity)
+    {
+		RB.velocity = jumpVelocity;
+		jumpTimer = 0.0f;
+		jumped = true;
 	}
 
 	public void PlayerDeathToggleOn(Vector2 deathDirection) {
@@ -171,7 +179,7 @@ public class PlayerPlatformer : MonoBehaviour {
         if (grounded)
         {
 			Animator.SetBool("Grounded", true);
-        }
+		}
         else
         {
 			Animator.SetBool("Grounded", false);
@@ -189,12 +197,21 @@ public class PlayerPlatformer : MonoBehaviour {
 			Animator.SetBool("Running", true);
 		}
 
-		if(jumpTimer > 0)
+		if(jumped)
         {
 			Animator.SetBool("Idle", false);
 			Animator.SetTrigger("JumpStart");
+			jumped = false;
 		}
 
+        if (gliding && !grounded)
+        {
+			Animator.SetBool("Glide", true);
+        }
+        else
+        {
+			Animator.SetBool("Glide", false);
+        }
 	}
 	#endregion
 }
